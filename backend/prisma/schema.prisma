@@ -1,0 +1,75 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Vendor {
+  id                String          @id @default(uuid())
+  name              String
+  category          String
+  contactPerson     String
+  phone             String
+  email             String
+  location          String
+  businessId        String?
+  notes             String?
+  averageScore      Float           @default(0.0)
+  scorePercentage   Float           @default(0.0)
+  status            String          @default("Active") // Active, Warning, Blacklisted
+  riskLevel         String          @default("Low")    // Low, Medium, High
+  totalEvents       Int             @default(0)
+  noRebookCount     Int             @default(0)
+  severeIssueCount  Int             @default(0)
+  blacklistReason   String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  ratings           Rating[]
+  statusHistories   StatusHistory[]
+}
+
+model Rating {
+  id                String    @id @default(uuid())
+  vendorId          String
+  vendor            Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  eventName         String
+  eventDate         DateTime
+  eventType         String
+  clientName        String
+  venue             String
+  ratedBy           String
+  punctuality       Int
+  quality           Int
+  professionalism   Int
+  costBehavior      Int
+  communication     Int
+  finalScore        Float
+  scorePercentage   Float
+  wouldRebook       Boolean
+  issues            String    // Comma-separated list of issues
+  feedback          String
+  adminNotes        String?
+  createdAt         DateTime  @default(now())
+}
+
+model StatusHistory {
+  id          String   @id @default(uuid())
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  oldStatus   String
+  newStatus   String
+  reason      String
+  changedBy   String
+  createdAt   DateTime @default(now())
+}
+
+model Setting {
+  id          String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+}
