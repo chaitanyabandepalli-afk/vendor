@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
+import AIChatbot from './components/AIChatbot.jsx';
 
 // Pages
 import Login from './pages/Login.jsx';
@@ -29,6 +30,7 @@ function DashboardLayout({ user, onLogout, children }) {
         <main className="flex-1 overflow-y-auto pb-12">
           {children}
         </main>
+        <AIChatbot />
       </div>
     </div>
   );

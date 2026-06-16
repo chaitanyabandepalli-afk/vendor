@@ -4,23 +4,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =====================================================
+   BASE LAYER - Body, Headings, Root Resets
+   ===================================================== */
 @layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    background-color: #0b0c10;
+    background-color: #07080a;
     color: #f3f4f6;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', sans-serif;
     color: #ffffff;
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  input, select, textarea, button {
+    font-family: 'Inter', sans-serif;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
   }
 }
 
-/* Glassmorphism Styles */
+/* =====================================================
+   GLASSMORPHISM COMPONENTS
+   ===================================================== */
 .glass-panel {
   background: rgba(17, 18, 28, 0.75);
   backdrop-filter: blur(14px);
@@ -43,11 +73,29 @@
   transform: translateY(-2px);
 }
 
+.glass-modal {
+  background: rgba(14, 15, 24, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* =====================================================
+   FORM INPUTS
+   ===================================================== */
 .glass-input {
   background: rgba(15, 16, 26, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  outline: none;
+}
+
+.glass-input::placeholder {
+  color: rgba(156, 163, 175, 0.6);
 }
 
 .glass-input:focus {
@@ -57,63 +105,318 @@
   outline: none;
 }
 
-/* Custom Scrollbars */
+.glass-input option {
+  background-color: #12131f;
+  color: #ffffff;
+}
+
+/* =====================================================
+   CUSTOM SCROLLBARS
+   ===================================================== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f1015;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(192, 132, 252, 0.4);
 }
 
-/* Text and Gradients */
+/* =====================================================
+   TEXT GRADIENTS & BRAND COLORS
+   ===================================================== */
 .text-gradient {
   background: linear-gradient(135deg, #a78bfa 0%, #c084fc 50%, #f472b6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .bg-gradient-brand {
   background: linear-gradient(135deg, #581c87 0%, #1e1b4b 100%);
 }
 
+.bg-gradient-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+}
+
 .border-gradient-brand {
   border-image: linear-gradient(to right, #a78bfa, #f472b6) 1;
 }
 
-/* Status colors and Glow effects */
+/* =====================================================
+   GLOW EFFECTS
+   ===================================================== */
 .glow-green {
-  box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
 }
 
 .glow-orange {
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.15);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
 }
 
 .glow-red {
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
 }
 
 .glow-purple {
-  box-shadow: 0 0 15px rgba(192, 132, 252, 0.15);
+  box-shadow: 0 0 20px rgba(192, 132, 252, 0.2);
 }
 
-/* Animations */
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+/* =====================================================
+   ANIMATIONS & KEYFRAMES
+   ===================================================== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(192, 132, 252, 0.3); }
+  50%       { box-shadow: 0 0 20px rgba(192, 132, 252, 0.6); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: scale(0); }
+  40%           { transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes blob-move {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.05); }
+  66%       { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* Animation Utility Classes */
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-blob {
+  animation: blob-move 8s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+/* Staggered animation delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* =====================================================
+   TYPING DOTS (AI Chatbot)
+   ===================================================== */
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: rgba(192, 132, 252, 0.8);
+  border-radius: 50%;
+  display: inline-block;
+  animation: bounce-dot 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* =====================================================
+   SHIMMER LOADING EFFECT
+   ===================================================== */
+.shimmer {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.03) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.03) 75%
+  );
+  background-size: 200% auto;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* =====================================================
+   CHATBOT WIDGET STYLES
+   ===================================================== */
+.chatbot-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+
+.chatbot-window {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  width: 380px;
+  max-height: 560px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 9998;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(192, 132, 252, 0.15);
+  animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-message-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  color: white;
+  border-radius: 16px 16px 4px 16px;
+  padding: 10px 14px;
+  max-width: 80%;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.chat-message-bot {
+  align-self: flex-start;
+  background: rgba(30, 32, 53, 0.8);
+  border: 1px solid rgba(192, 132, 252, 0.15);
+  color: #e5e7eb;
+  border-radius: 16px 16px 16px 4px;
+  padding: 10px 14px;
+  max-width: 85%;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =====================================================
+   BUTTON UTILITIES
+   ===================================================== */
+.btn-primary {
+  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* =====================================================
+   MISC UTILITIES
+   ===================================================== */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  width: 100%;
 }
