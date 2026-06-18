@@ -13,10 +13,10 @@ router.get('/', async (req, res) => {
     const where = {};
     if (search) {
       where.OR = [
-        { name: { contains: search } },
-        { contactPerson: { contains: search } },
-        { email: { contains: search } },
-        { location: { contains: search } }
+        { name: { contains: search, mode: 'insensitive' } },
+        { contactPerson: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+        { location: { contains: search, mode: 'insensitive' } }
       ];
     }
     if (category) {

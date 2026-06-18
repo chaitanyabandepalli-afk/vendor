@@ -24,8 +24,8 @@ router.get('/summary', async (req, res) => {
       ? parseFloat((vendorsWithRatings.reduce((sum, v) => sum + v.averageScore, 0) / vendorsWithRatings.length).toFixed(2))
       : 0.0;
 
-    // Simulated pending reviews count (since we only record completed ratings)
-    const pendingReviewsCount = 4;
+    // Real pending reviews = vendors with zero ratings (never reviewed)
+    const pendingReviewsCount = await prisma.vendor.count({ where: { totalEvents: 0 } });
 
     // 2. Score distribution chart data
     // Brackets: < 2.5 (Blacklisted), 2.5 - 3.2 (Warning), 3.2 - 4.0 (Monitor), 4.0 - 5.0 (Reliable)

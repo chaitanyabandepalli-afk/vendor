@@ -1,37 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  dashboardService 
+import {
+  dashboardService
 } from '../services/api.js';
 import StatCard from '../components/StatCard.jsx';
 import ScoreBadge from '../components/ScoreBadge.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
-import { 
-  Users, 
-  ShieldAlert, 
-  Sparkles, 
-  CalendarCheck, 
-  FileEdit, 
-  TrendingUp, 
+import {
+  Users,
+  ShieldAlert,
+  Sparkles,
+  CalendarCheck,
+  FileEdit,
+  TrendingUp,
   ArrowUpRight,
   Clock,
   UserCheck
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  AreaChart, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
   Area,
   PieChart,
   Pie,
   Cell
 } from 'recharts';
+
+const toArray = (value) => {
+  return Array.isArray(value) ? value : [];
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -60,7 +64,47 @@ export default function Dashboard() {
   if (error) return <div className="p-8 text-center text-red-400 font-semibold">{error}</div>;
   if (!data) return null;
 
-  const { kpis, charts, topPerforming, atRisk, recentlyRated, latestAlerts } = data;
+  const defaultKpis = {
+    totalVendors: 0,
+    activeVendors: 0,
+    warningVendors: 0,
+    blacklistedVendors: 0,
+    averageVendorScore: 0,
+    totalEventsRated: 0,
+    pendingReviewsCount: 0,
+  };
+
+  const defaultCharts = {
+    scoreDistribution: [],
+    categoryPerformance: [],
+    monthlyRatingActivity: [],
+  };
+
+  const {
+    kpis = defaultKpis,
+    charts = defaultCharts,
+    topPerforming = [],
+    atRisk = [],
+    recentlyRated = [],
+    latestAlerts = [],
+  } = data || {};
+
+  const safeCharts = {
+    scoreDistribution: Array.isArray(charts?.scoreDistribution)
+      ? charts.scoreDistribution
+      : [],
+    categoryPerformance: Array.isArray(charts?.categoryPerformance)
+      ? charts.categoryPerformance
+      : [],
+    monthlyRatingActivity: Array.isArray(charts?.monthlyRatingActivity)
+      ? charts.monthlyRatingActivity
+      : [],
+  };
+
+  const safeTopPerforming = Array.isArray(topPerforming) ? topPerforming : [];
+  const safeAtRisk = Array.isArray(atRisk) ? atRisk : [];
+  const safeRecentlyRated = Array.isArray(recentlyRated) ? recentlyRated : [];
+  const safeLatestAlerts = Array.isArray(latestAlerts) ? latestAlerts : [];
 
   const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
 
@@ -71,29 +115,29 @@ export default function Dashboard() {
 
   return (
     <div className="p-8 space-y-8 animate-fade-in max-w-7xl mx-auto">
-      
+
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard
           title="Total Vendors"
-          value={kpis.totalVendors}
+          value={kpis?.totalVendors ?? 0}
           icon={<Users className="w-5 h-5" />}
           subtext="Onboarded suppliers"
-          trend={`${kpis.activeVendors} Active`}
+          trend={`${kpis?.activeVendors ?? 0} Active`}
           trendType="up"
           onClick={() => navigate('/vendors')}
         />
         <StatCard
           title="Average Score"
-          value={`${kpis.averageVendorScore} / 5`}
+          value={`${kpis?.averageVendorScore ?? 0} / 5`}
           icon={<TrendingUp className="w-5 h-5" />}
           subtext="SLV System Average"
-          trend={`${Math.round((kpis.averageVendorScore / 5) * 100)}% Rating`}
+          trend={`${Math.round(((kpis?.averageVendorScore ?? 0) / 5) * 100)}% Rating`}
           trendType="neutral"
         />
         <StatCard
           title="Warning / Risky"
-          value={kpis.warningVendors}
+          value={kpis?.warningVendors ?? 0}
           icon={<ShieldAlert className="w-5 h-5 text-orange-400" />}
           subtext="Need monitoring"
           trend="Action required"
@@ -114,13 +158,13 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <StatCard
           title="Rated Events"
-          value={kpis.totalEventsRated}
+          value={kpis?.totalEventsRated ?? 0}
           icon={<CalendarCheck className="w-5 h-5" />}
           subtext="Event histories completed"
         />
         <StatCard
           title="Pending Reviews"
-          value={kpis.pendingReviewsCount}
+          value={kpis?.pendingReviewsCount ?? 0}
           icon={<FileEdit className="w-5 h-5" />}
           subtext="Reviews awaiting detail"
           trend="Draft submissions"
@@ -130,7 +174,7 @@ export default function Dashboard() {
           <div>
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">Need Recommendations?</h4>
             <p className="text-xs text-gray-400 mt-1">Match high-quality vendors to new event types instantly.</p>
-            <button 
+            <button
               onClick={() => navigate('/recommendations')}
               className="mt-3 flex items-center gap-1 text-xs font-bold text-purple-300 hover:text-white transition-colors"
             >
@@ -144,7 +188,7 @@ export default function Dashboard() {
 
       {/* Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Monthly Rating Activity (2/3 width) */}
         <div className="glass-panel p-6 rounded-xl lg:col-span-2 flex flex-col h-80">
           <h3 className="text-md font-bold mb-4 flex items-center gap-2">
@@ -153,17 +197,17 @@ export default function Dashboard() {
           </h3>
           <div className="flex-1 w-full h-full min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={charts.monthlyRatingActivity}>
+              <AreaChart data={safeCharts.monthlyRatingActivity}>
                 <defs>
                   <linearGradient id="colorRatings" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#c084fc" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="#c084fc" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#c084fc" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#c084fc" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="month" stroke="rgba(255,255,255,0.4)" fontSize={11} />
                 <YAxis stroke="rgba(255,255,255,0.4)" fontSize={11} allowDecimals={false} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'rgba(15, 16, 26, 0.95)', borderColor: 'rgba(255,255,255,0.1)' }}
                   labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
                 />
@@ -183,7 +227,7 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={charts.scoreDistribution}
+                  data={safeCharts.scoreDistribution}
                   cx="50%"
                   cy="50%"
                   innerRadius={50}
@@ -191,11 +235,11 @@ export default function Dashboard() {
                   paddingAngle={5}
                   dataKey="count"
                 >
-                  {charts.scoreDistribution.map((entry, index) => (
+                  {safeCharts.scoreDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'rgba(15, 16, 26, 0.95)', borderColor: 'rgba(255,255,255,0.1)' }}
                   itemStyle={{ color: '#fff' }}
                 />
@@ -203,7 +247,7 @@ export default function Dashboard() {
             </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2 text-[10px] text-gray-400 font-semibold">
-            {charts.scoreDistribution.map((entry, idx) => (
+            {safeCharts.scoreDistribution.map((entry, idx) => (
               <div key={entry.name} className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[idx] }} />
                 <span className="truncate">{entry.name} ({entry.count})</span>
@@ -220,16 +264,16 @@ export default function Dashboard() {
           </h3>
           <div className="flex-1 w-full h-full min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={charts.categoryPerformance}>
+              <BarChart data={safeCharts.categoryPerformance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="category" stroke="rgba(255,255,255,0.4)" fontSize={11} />
                 <YAxis stroke="rgba(255,255,255,0.4)" fontSize={11} domain={[0, 5]} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'rgba(15, 16, 26, 0.95)', borderColor: 'rgba(255,255,255,0.1)' }}
                   labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
                 />
                 <Bar dataKey="averageScore" fill="#a78bfa" radius={[4, 4, 0, 0]}>
-                  {charts.categoryPerformance.map((entry, index) => (
+                  {safeCharts.categoryPerformance.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.averageScore >= 4.0 ? '#22c55e' : entry.averageScore >= 3.2 ? '#c084fc' : entry.averageScore >= 2.5 ? '#f97316' : '#ef4444'} />
                   ))}
                 </Bar>
@@ -241,7 +285,7 @@ export default function Dashboard() {
 
       {/* Side-by-side Tables Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
+
         {/* Top Performing Vendors */}
         <div className="glass-panel p-6 rounded-xl flex flex-col">
           <h3 className="text-md font-bold text-white mb-4 flex items-center justify-between">
@@ -263,9 +307,9 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {topPerforming.map(v => (
-                  <tr 
-                    key={v.id} 
+                {safeTopPerforming.map(v => (
+                  <tr
+                    key={v.id}
                     onClick={() => navigate(`/vendors/${v.id}`)}
                     className="border-b border-white/5 hover:bg-white/5 cursor-pointer text-sm font-medium transition-colors"
                   >
@@ -302,16 +346,16 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {atRisk.length === 0 ? (
+                {safeAtRisk.length === 0 ? (
                   <tr>
                     <td colSpan="3" className="py-4 text-center text-xs text-gray-500 font-semibold uppercase">
                       No vendors currently flagged at risk.
                     </td>
                   </tr>
                 ) : (
-                  atRisk.map(v => (
-                    <tr 
-                      key={v.id} 
+                  safeAtRisk.map(v => (
+                    <tr
+                      key={v.id}
                       onClick={() => navigate(`/vendors/${v.id}`)}
                       className="border-b border-white/5 hover:bg-white/5 cursor-pointer text-sm font-medium transition-colors"
                     >
@@ -352,7 +396,7 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {recentlyRated.map(r => (
+                {safeRecentlyRated.map(r => (
                   <tr key={r.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
                     <td className="py-3">
                       <div className="flex flex-col">
@@ -411,7 +455,7 @@ export default function Dashboard() {
                     </td>
                   </tr>
                 ) : (
-                  latestAlerts.map(alert => (
+                  safeLatestAlerts.map(alert => (
                     <tr key={alert.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
                       <td className="py-3">
                         <div className="flex flex-col">
@@ -442,3 +486,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+

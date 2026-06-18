@@ -377,7 +377,7 @@ export default function VendorDetail({ activeRole }) {
                           <div className="flex flex-col text-xs">
                             <span className="font-semibold text-white">{rating.ratedBy}</span>
                             <span className="text-gray-400 italic mt-1.5 block max-w-xs overflow-hidden text-ellipsis line-clamp-2" title={rating.feedback}>
-                              "{rating.feedback}"
+                              &ldquo;{rating.feedback}&rdquo;
                             </span>
                             {rating.adminNotes && (
                               <span className="text-[10px] text-gray-500 bg-white/5 p-1 rounded mt-2 border border-white/5">

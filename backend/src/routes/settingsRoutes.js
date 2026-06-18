@@ -25,12 +25,13 @@ router.put('/', async (req, res) => {
       return res.status(400).json({ error: "Settings array is required" });
     }
 
-    // Update each setting in a transaction
+    // Upsert each setting (create if not exists, update if exists)
     await prisma.$transaction(
       settings.map(s =>
-        prisma.setting.update({
+        prisma.setting.upsert({
           where: { id: s.id },
-          data: { value: String(s.value) }
+          update: { value: String(s.value) },
+          create: { id: s.id, value: String(s.value), description: s.description || null }
         })
       )
     );
